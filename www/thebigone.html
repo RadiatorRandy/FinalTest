@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    
+    <link rel="stylesheet" type="text/css" href="big.css" />
+    
+    <title>Task Manager</title>
+    
+</head>
+<body>
+    
+    <div class="title"> To Do List </div>
+    
+    <br><br>
+    
+<div class="inputArea" align="center">
+    
+<input type="text" onfocus ="this.value=''" id="task" placeholder="enter a new task">
+
+    <input type='date' id='dueDate' onfocus ="this.value= ''" min='2019-10-01' max='2020-12-31'>
+
+    
+    <select id="priority">
+        <option value="" disabled>choose priority</option>
+        <option value = "HIGH" > HIGH </option>
+        <option value = "MEDIUM"> MEDIUM </option>
+        <option value="LOW"> LOW </option>
+    </select>
+    
+    <select id="category">
+        <option value="" disabled>choose category</option>
+        <option value="Work">WORK </option>
+        <option value="Personal"> PERSONAL</option>
+        <option value="School"> SCHOOL</option>
+    </select>
+    
+    <button id="add">+</button>
+    <button id="clear" onclick="clearStr()"> Clear</button>
+</div>
+    
+    
+    <br>
+    <br>
+    <br>
+    
+    <table align="center" id="myTable">
+    <tr> 
+            <th>Done?</th>
+            <th>Task</th>
+            <th><img src="img/calendar-black.png"></th>
+            <th>Priority</th>
+            <th>Category</th>
+    </tr>
+    </table>
+        
+    
+  <div id="todos" align="center"></div>
+    
+    
+
+
+<script src="index.js"></script>
+
+<script>
+//saveCars();
+   var cars = new Array();
+   //testSaveArray();
+function get_todos() {
+    var todos = new Array;
+	//var cars = new Array;
+    var todos_str = localStorage.getItem('todo');
+    //var cars_str = localStorage.getItem('cars');
+    if (todos_str !== null) {
+        todos = JSON.parse(todos_str);
+		//cars = JSON.parse(cars_str);
+    }
+    return todos;
+	//return cars;
+}
+
+/*
+function testSaveArray() {
+	var cars = new Array2;
+    
+    var cars_str = localStorage.getItem('cars');
+    if (cars_str !== null) {
+		cars = JSON.parse(cars_str);
+    }
+	return cars;
+}
+*/
+
+/*
+function saveCars()
+{
+	var cars = new Array();
+	    var cars_str = localStorage.getItem('cars');
+	}
+   */
+//Clears the local storage completely and clears the screen without refreshing
+function clearStr(){
+    localStorage.clear();
+    alert("*** ALL CLEAR ***");
+    document.getElementById("todos").innerHTML= " ";
+}
+
+//changes the color of the text based on the priority
+function priColor() {
+    
+    var val = document.getElementById('priority').value;
+    if (val == 'HIGH') {
+        
+        colstr="<font color='orange'>";
+        colstr+= priority.value;
+        colstr+="</font>";
+    }
+    
+    if (val == 'MEDIUM') {
+        
+        colstr = "<font color='yellow'>";
+        colstr+= priority.value;
+        colstr+="</font>";
+    }
+    
+    if (val == 'LOW') {
+        
+        colstr = "<font color='dodgerblue'>";
+        colstr += priority.value;
+        colstr += "</font>";
+    }
+}
+    
+
+//compares current date with input date and changes the font color and style
+function fontDate() {
+    var userDate = document.getElementById('dueDate').value;
+    
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = today.getMonth()+1;
+    var dd = today.getDate();
+    
+    //formats current date to match the date input
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    
+    if (mm < 10) {
+        mm= '0' + mm;
+    }
+    
+    //new formatted date
+    today = yyyy + '-' + mm +'-' + dd;
+    
+        
+    if (userDate == today) {
+        datestr = "<strong>";
+        datestr += dueDate.value;
+        datestr += "</strong>";
+    }
+    
+    if (userDate > today) {
+        datestr = dueDate.value;
+    }
+    
+    if (userDate < today) {
+        datestr = "<strong>";
+        datestr += "<font color= 'red'>";
+        datestr += dueDate.value;
+        datestr += "</font>";
+        datestr += "</strong>";
+    }
+}
+    
+
+//validates the checkbox and puts a line through when the checkbox is clicked
+function validCheck() {
+    var checkBox = document.getElementById("myCheckbox");
+    
+    var text = document.getElementById("todos");
+    
+    //this puts a line through all of the todos
+    if(checkBox.checked == true) {
+        alert("checked");
+        text.style.textDecoration= "line-through";
+    }
+    
+    //when the checkbox is unchecked, the line through disappears
+    if(checkBox.checked == false) {
+        alert("unchecked");
+        text.style.textDecoration= "none";
+    }
+    
+} 
+  
+//This function should reset the text field after the add button is clicked
+function resetTxtField() {
+    
+    frm = document.getElementById('task');
+    frm.reset();
+}
+
+    
+
+//gathers the date by the value that was selected
+function addDate() {
+   var due = document.getElementById("dueDate").value; 
+}
+
+function addPriority() {
+    var pri = document.getElementById("priority").value;
+ }
+    
+    
+function addCategory() {
+    var cate = document.getElementById("category").value;
+}
+    
+  
+function add() {
+    var task = document.getElementById('task').value;
+    
+    fontDate();
+    priColor();
+	
+
+
+    //col str is the color string for priority
+    task += '&nbsp &nbsp &nbsp &nbsp' + datestr + '&nbsp &nbsp &nbsp &nbsp'  + colstr + '&nbsp &nbsp &nbsp &nbsp' + category.value + '&nbsp &nbsp &nbsp &nbsp';
+	
+    
+    var todos = get_todos();
+	//var cars = get_cars();
+    todos.push(task);
+	cars.push(dueDate.value);
+    localStorage.setItem('todo', JSON.stringify(todos));
+	//localStorage.setItem('cars', JSON.stringify(cars));
+    //cars.push(dueDate.value);
+	//alert(dueDate.value);
+    showData();
+
+    return false;
+}
+ 
+    
+//Removes a single item from the list of todos
+function remove() {
+    
+    var id = this.getAttribute('id');
+    var todos = get_todos();
+    
+    //JSON is a predefined library
+    //splice removes it from the array spot
+    todos.splice(id, 1);
+    localStorage.setItem('todo', JSON.stringify(todos));
+ 
+    showData();
+ 
+    return false;
+}
+	
+	
+
+function showData() {
+    
+    
+    var todos = get_todos();
+	//var cars = get_cars();
+    
+ 
+    var html = '<ol>';    
+    
+
+    for(var i = 0; i <todos.length; i++) {
+		
+        html +=  '<li><input type="checkbox" id="myCheckbox" onclick = "validCheck()">' + '&nbsp &nbsp &nbsp &nbsp &nbsp' + todos[i] + cars[i] + '<button class="remove" id="' + i + '"> X </button><br><br></input> </li>';
+    };
+    
+        
+    html += '</ol>';
+    
+    document.getElementById('todos').innerHTML = html;
+    
+    
+    //assigning buttons to the class name remove
+    var buttons = document.getElementsByClassName('remove');
+    
+    //for loop removes the item from the list
+    for (var i=0; i < buttons.length; i++) {
+        buttons[i].addEventListener('click', remove);
+    };
+	}
+
+ 
+	document.getElementById('add').addEventListener('click', add);
+	showData();
+    
+    
+</script>
+</body>
+</html>
+ 
